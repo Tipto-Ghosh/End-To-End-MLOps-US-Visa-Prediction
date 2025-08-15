@@ -1,9 +1,10 @@
 import logging
 import os 
 from datetime import datetime
+from from_root import from_root
 
 # make the logs directory
-logs_dir = os.path.join(os.getcwd() , "logs")
+logs_dir = os.path.join(from_root() , "logs")
 os.makedirs(logs_dir , exist_ok = True)
 
 # Log filename
