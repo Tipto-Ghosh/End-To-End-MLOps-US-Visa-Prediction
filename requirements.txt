@@ -1,0 +1,22 @@
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+python-box
+PyYAML
+tqdm
+joblib
+types-PyYAML
+Flask
+Flask-Cors
+notebook
+jupyterlab
+catboost
+xgboost
+python-dotenv
+mysql-connector-python
+pymysql
+mlflow
+dill
+-e .
