@@ -130,7 +130,7 @@ class DataValidation:
             n_features = json_report["data_drift"]["data"]["metrics"]["n_features"]
             n_drifted_features = json_report["data_drift"]["data"]["metrics"]["n_drifted_features"]
             data_drift_percentage = (n_drifted_features / n_features) * 100
-            
+            logging.info(f"Out of {n_features} columns data drift detected in {n_drifted_features} columns")
             logging.info(f"Data Drift percentage: {data_drift_percentage} %")
             drift_status = json_report["data_drift"]["data"]["metrics"]["dataset_drift"]
             
@@ -179,11 +179,11 @@ class DataValidation:
                 if drift_status:
                     logging.info("Data Drift Detected")
                     validation_error_msg = "Data Drift Detected"
-                    data_validation_status = True
+                    data_validation_status = False
                 else:
                     logging.info("Data Drift not Detected")
                     validation_error_msg = "Data Drift not Detected"
-                    data_validation_status = False
+                    data_validation_status = True
             else:
                 logging.info(f"Data Validation error: {validation_error_msg}") 
                 data_validation_status = False
