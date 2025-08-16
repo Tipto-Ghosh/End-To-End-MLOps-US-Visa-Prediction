@@ -13,3 +13,11 @@
 4. data access(connection with the database)
 5. update the data_ingestion component
 6. add data_ingestion to the training pipeline
+
+---
+### Data Validation workflow
+1. constants
+2. config_entity
+3. artifact_entity
+4. update the data_validation component
+5. add data_validation to the training pipeline
