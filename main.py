@@ -1,9 +1,6 @@
-from src.us_visa.logger import logging
-from src.us_visa.exception import UsVisaException
-import sys 
+import sys
+from src.us_visa.pipeline.training_pipeline import TrainingPipeline
 
-
-try:
-    a = 12 / 0
-except Exception as e:
-    raise UsVisaException(e , sys)
+# Run the training pipeline
+training_pipeline_obj = TrainingPipeline()
+training_pipeline_obj.run_training_pipeline()

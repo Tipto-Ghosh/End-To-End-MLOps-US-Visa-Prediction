@@ -2,3 +2,14 @@
 
 
 - Dataset Link: https://www.kaggle.com/datasets/moro23/easyvisa-dataset
+
+
+## Workflow
+---
+### Data Ingestion workflow
+1. constants
+2. config_entity
+3. artifact_entity
+4. data access(connection with the database)
+5. update the data_ingestion component
+6. add data_ingestion to the training pipeline
