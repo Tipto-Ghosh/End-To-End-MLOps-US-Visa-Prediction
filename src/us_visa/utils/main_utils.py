@@ -5,10 +5,17 @@ import numpy as np
 import dill
 import yaml
 from pandas import DataFrame
-
+import pandas as pd 
 from src.us_visa.exception import UsVisaException
 from src.us_visa.logger import logging
 
+
+def read_csv(file_path: str) -> DataFrame:
+    try:
+        df = pd.read_csv(file_path)
+        return df
+    except Exception as e:
+        raise UsVisaException(e , sys)
 
 def read_yaml_file(file_path: str) -> dict:
     try:
