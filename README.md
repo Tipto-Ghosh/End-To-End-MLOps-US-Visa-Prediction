@@ -29,3 +29,11 @@
 3. update artifact_entity
 4. update the data_transformation component
 5. add data_transformation to the training pipeline
+
+---
+### Model Trainer workflow
+1. update constants
+2. update config_entity
+3. update artifact_entity
+4. update the model_trainer component
+5. add model_trainer to the training pipeline
