@@ -77,7 +77,9 @@ def save_numpy_array_data(file_path: str, array: np.array):
     """
     try:
         dir_path = os.path.dirname(file_path)
-        os.makedirs(dir_path, exist_ok=True)
+        if dir_path:
+           os.makedirs(dir_path, exist_ok=True)
+        
         with open(file_path, 'wb') as file_obj:
             np.save(file_obj, array)
     except Exception as e:
@@ -114,5 +116,26 @@ def drop_columns(df: DataFrame, cols: list)-> DataFrame:
         logging.info(f"Dropped columns: {cols}")
         logging.info("Exited the drop_columns method of utils")
         return df
+    except Exception as e:
+        raise UsVisaException(e, sys) from e
+
+def save_yaml_file(file_path: str, data: dict):
+    """
+    Save dictionary data to a YAML file.
+
+    Args:
+        file_path (str): Location of the YAML file to save.
+        data (dict): Dictionary data to save in YAML format.
+    """
+    try:
+        # Ensure the directory exists
+        dir_path = os.path.dirname(file_path)
+        if dir_path:
+           os.makedirs(dir_path, exist_ok=True)
+        
+        # Write the dictionary to YAML
+        with open(file_path, 'w') as file_obj:
+            yaml.dump(data, file_obj)
+
     except Exception as e:
         raise UsVisaException(e, sys) from e

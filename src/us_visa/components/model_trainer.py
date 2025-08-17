@@ -51,7 +51,7 @@ class ModelTrainer:
             # tune all the models from model.yaml file
             logging.info("calling model_factory.get_best_model method from get_model_object_and_report")
             best_model_detail = model_factory.get_best_model(
-                X_train = X_train , y_train = y_train , base_accuracy = self.model_trainer_config.expected_accuracy
+                X_train = X_train , y_train = y_train
             ) 
             
             # get the best model_object
@@ -119,7 +119,10 @@ class ModelTrainer:
             )
             # 5. save the usvisa_model(object) to trained_model_file_path
             logging.info("saving usvisa_model(preprocessing_object + best_model_detail.best_model)")
-            save_object(file_path = self.model_trainer_config.trained_model_file_path)
+            save_object(
+                file_path = self.model_trainer_config.trained_model_file_path, 
+                obj = usvisa_model 
+            )
             logging.info("Created usvisa model object with preprocessor and model")
             
             
