@@ -21,3 +21,11 @@
 3. artifact_entity
 4. update the data_validation component
 5. add data_validation to the training pipeline
+
+---
+### Data Transformation workflow
+1. update constants
+2. update config_entity
+3. update artifact_entity
+4. update the data_transformation component
+5. add data_transformation to the training pipeline

@@ -5,10 +5,10 @@ from src.us_visa.exception import UsVisaException
 
 from src.us_visa.components.data_ingestion import DataIngestion
 from src.us_visa.components.data_validation import DataValidation
+from src.us_visa.components.data_transformation import DataTransformation
 
-
-from src.us_visa.entity.config_entity import DataIngestionConfig , DataValidationConfig
-from src.us_visa.entity.artifact_entity import DataIngestionArtifact , DataValidationArtifact
+from src.us_visa.entity.config_entity import DataIngestionConfig , DataValidationConfig , DataTransformationConfig
+from src.us_visa.entity.artifact_entity import DataIngestionArtifact , DataValidationArtifact , DataTransformationArtifact
 
 
 
@@ -19,7 +19,10 @@ class TrainingPipeline:
         
         # Do the data validation
         self.data_validation_config = DataValidationConfig()
-    
+        
+        # Do the data transformation
+        self.data_transformation_config = DataTransformationConfig()
+        
     def start_data_ingestion(self) -> DataIngestionArtifact:
         """ 
         This will start the data ingestion component and return DataIngestionArtifact
@@ -60,6 +63,26 @@ class TrainingPipeline:
             return data_validation_artifact
         except Exception as e:
             raise UsVisaException(e , sys)
+        
+        
+    def start_data_transformation(self , data_ingestion_artifact: DataIngestionArtifact , data_validation_artifact: DataValidationArtifact) -> DataTransformationArtifact:
+        """
+        This method of TrainPipeline class is responsible for starting data transformation component
+        """
+        try:
+            data_transformation = DataTransformation(
+                data_transformation_config = self.data_transformation_config,
+                data_ingestion_artifact = data_ingestion_artifact,
+                data_validation_artifact = data_validation_artifact
+            )
+            
+            # initiate  data transformation
+            data_transformation_artifact = data_transformation.initiate_data_transformation()
+            return data_transformation_artifact
+        except Exception as e:
+            raise UsVisaException(e , sys)
+        
+        
     def run_training_pipeline(self , ) -> None:
         """ 
         This method of TrainingPipeline class is responsible for running complete training pipeline
@@ -72,6 +95,13 @@ class TrainingPipeline:
           
           # 2. Run the data validation
           data_validation_artifact = self.start_data_validation(data_ingestion_artifact = data_ingestion_artifact)
-          print(f"data_validation_artifact: {data_validation_artifact}")
+          #print(f"data_validation_artifact: {data_validation_artifact}")
+          
+          # 3. Run the data transformation
+          data_transformation_artifact = self.start_data_transformation(
+            data_ingestion_artifact = data_ingestion_artifact,
+            data_validation_artifact = data_validation_artifact
+          )
+        
         except Exception as e:
             raise UsVisaException(e , sys)

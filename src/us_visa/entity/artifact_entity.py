@@ -12,3 +12,11 @@ class DataValidationArtifact:
     validation_status : bool
     message : str # Data Drift Detected / Not Detected 
     drift_report_file_path : str 
+
+
+@dataclass
+class DataTransformationArtifact:
+    transformed_object_file_path : str
+    transformed_train_data_file_path : str
+    transformed_test_data_file_path : str 
+    

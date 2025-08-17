@@ -37,7 +37,15 @@ DATA_INGESTION_TRAIN_TEST_SPLIT_RATIO : str = 0.2 # test size
 
 
 
-# Data Validation realted contant start with DATA_VALIDATION VAR NAME
+# Data Validation realted contant start with DATA_VALIDATION 
 DATA_VALIDATION_DIR_NAME : str = "data_validation"
 DATA_VALIDATION_DRIFT_REPORT_DIR : str = "drift_report"
 DATA_VALIDATION_DRIFT_REPORT_FILE_NAME : str = "report.yaml"
+
+
+
+
+# Data Validation realted contant start with DATA_TRANSFORMATION
+DATA_TRANSFORMATION_DIR_NAME : str = "data_transformation"
+DATA_TRANSFORMATION_TRANSFORMED_DATA_DIR : str = "transformed_data"
+DATA_TRANSFORMATION_TRANSFORMED_OBJECT_DIR : str = "transformed_object"

@@ -110,10 +110,9 @@ def drop_columns(df: DataFrame, cols: list)-> DataFrame:
     logging.info("Entered drop_columns methon of utils")
 
     try:
-        df = df.drop(columns=cols, axis=1)
-
+        df = df.drop(columns = cols , axis = 1)
+        logging.info(f"Dropped columns: {cols}")
         logging.info("Exited the drop_columns method of utils")
-        
         return df
     except Exception as e:
         raise UsVisaException(e, sys) from e
