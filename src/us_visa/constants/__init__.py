@@ -53,7 +53,14 @@ DATA_TRANSFORMATION_TRANSFORMED_OBJECT_DIR : str = "transformed_object"
 
 # Model Trainer realted contant start with MODEL_TRAINER
 MODEL_TRAINER_DIR_NAME : str = "model_trainer"
+# trained model path
 MODEL_TRAINER_TRAINED_MODEL_DIR : str = "trained_model"
 MODEL_TRAINER_TRAINED_MODEL_NAME : str = MODEL_FILE_NAME
+# Path to model.yaml
 MODEL_TRAINER_MODEL_CONFIG_FILE_PATH : str = os.path.join("config" , "model.yaml")
 MODEL_TRAINER_EXPECTED_SCORE : float = 0.8 # minimal accuracy score for classification
+
+# Reports directory for tuned models
+MODEL_TRAINER_ALL_MODEL_REPORT_DIR: str = "all_model_report"
+# File path where all tuned models' details will be saved
+MODEL_TRAINER_ALL_TUNED_MODEL_REPORT_FILE_PATH: str = "all_tuned_model_report.yaml" 

@@ -58,7 +58,19 @@ class DataTransformationConfig:
 @dataclass
 class ModelTrainerConfig:
     model_trainer_dir : str = os.path.join(training_pipeline_config.artifact_dir , MODEL_TRAINER_DIR_NAME)
-    trained_model_file_path : str = os.path.join(model_trainer_dir , MODEL_TRAINER_TRAINED_MODEL_DIR , MODEL_FILE_NAME)
+    trained_model_file_path : str = os.path.join(
+        model_trainer_dir , 
+        MODEL_TRAINER_TRAINED_MODEL_DIR , MODEL_FILE_NAME
+    )
     expected_accuracy : float = MODEL_TRAINER_EXPECTED_SCORE
     model_config_file_path : str = MODEL_TRAINER_MODEL_CONFIG_FILE_PATH # path of params to do grid search cv
-
+    
+    # directory to store all tuned model reports
+    all_model_report_dir : str = os.path.join(
+        model_trainer_dir,
+        MODEL_TRAINER_ALL_MODEL_REPORT_DIR
+    )
+    # yaml file path to store the report
+    tuned_model_report_file_path : str = os.path.join(
+        all_model_report_dir, MODEL_TRAINER_ALL_TUNED_MODEL_REPORT_FILE_PATH
+    ) 
