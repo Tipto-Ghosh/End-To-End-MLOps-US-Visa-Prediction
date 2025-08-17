@@ -309,26 +309,49 @@ class ModelFactory:
             
             # find the best model based on highest test accuracy
             best_score = -1
-            best_model_detail = None 
+            best_model_name = None
+             
             
             for model_name , result in self.tuned_model_report.items():
                 
-                test_accuracy = result["test_metrics"]["accuracy"]
+                test_accuracy = result.get("test_metrics", {}).get("accuracy", 0)
+                
                 if test_accuracy > best_score:
                     best_score = test_accuracy
+                    best_model_name = model_name
                     
-                    best_model_detail = BestModelDetail(
-                        best_model = result["best_model"],
-                        best_score = test_accuracy,
-                        best_params = result["best_params"],
-                        model_name = result.get("model_name" , model_name),
-                        module_name = result.get("module_name", "")
-                    )
             
-            if best_model_detail is None:
+            # if no best model found
+            if best_model_name is None:
                 raise UsVisaException("No model found in tuned model report.", sys)
             
-            logging.info(f"Best model: {best_model_detail.model_name} | Test Accuracy: {best_score:.4f}")
+            # get the best model metadata from model report
+            model_result = self.tuned_model_report[best_model_name]
+            
+            # get the model module
+            module_name = model_result["module_name"]
+            class_name = best_model_name
+            best_params = model_result["best_params"]
+            logging.info(f"Best model: {class_name} | Test Accuracy: {best_score:.4f}")
+            
+            # Dynamically recreate the model object
+            logging.info(f"Dynamically recreating the model object [{class_name}] from get_best_model method")
+            
+            module = import_module(module_name)
+            ModelClass = getattr(module , class_name)
+            best_model_obj = ModelClass(**best_params)
+            
+            logging.info("Dynamically recreation the model object done")
+            
+            logging.info("Constructing the BestModelDetail from get_best_model method")
+            best_model_detail = BestModelDetail(
+                best_model = best_model_obj,
+                best_score = best_score,
+                best_params = best_params,
+                model_name = best_model_name,
+                module_name = module_name
+            )
+            logging.info("Exiting from get_best_model method")
             return best_model_detail
         
         
