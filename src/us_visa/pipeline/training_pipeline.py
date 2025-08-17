@@ -6,9 +6,10 @@ from src.us_visa.exception import UsVisaException
 from src.us_visa.components.data_ingestion import DataIngestion
 from src.us_visa.components.data_validation import DataValidation
 from src.us_visa.components.data_transformation import DataTransformation
+from src.us_visa.components.model_trainer import ModelTrainer
 
-from src.us_visa.entity.config_entity import DataIngestionConfig , DataValidationConfig , DataTransformationConfig
-from src.us_visa.entity.artifact_entity import DataIngestionArtifact , DataValidationArtifact , DataTransformationArtifact
+from src.us_visa.entity.config_entity import DataIngestionConfig , DataValidationConfig , DataTransformationConfig , ModelTrainerConfig
+from src.us_visa.entity.artifact_entity import DataIngestionArtifact , DataValidationArtifact , DataTransformationArtifact , ModelTrainerArtifact
 
 
 
@@ -22,6 +23,9 @@ class TrainingPipeline:
         
         # Do the data transformation
         self.data_transformation_config = DataTransformationConfig()
+        
+        # Do the model training
+        self.model_trainer_config = ModelTrainerConfig()
         
     def start_data_ingestion(self) -> DataIngestionArtifact:
         """ 
@@ -82,6 +86,22 @@ class TrainingPipeline:
         except Exception as e:
             raise UsVisaException(e , sys)
         
+    def start_model_trainer(self, data_transformation_artifact: DataTransformationArtifact) -> ModelTrainerArtifact:
+        """
+        This method of TrainPipeline class is responsible for starting model training
+        """
+        try:
+            model_trainer = ModelTrainer(
+                data_transformation_artifact = data_transformation_artifact,
+                model_trainer_config = self.model_trainer_config
+            )
+            
+            model_trainer_artifact = model_trainer.initiate_model_trainer()
+            return model_trainer_artifact
+
+        except Exception as e:
+            raise UsVisaException(e, sys)
+        
         
     def run_training_pipeline(self , ) -> None:
         """ 
@@ -102,6 +122,14 @@ class TrainingPipeline:
             data_ingestion_artifact = data_ingestion_artifact,
             data_validation_artifact = data_validation_artifact
           )
+          
+          # 4. Run the model trainer
+          model_trainer_artifact = self.start_model_trainer(
+            data_transformation_artifact = data_transformation_artifact
+          )
+          
+          print("= " * 50)
+          print(model_trainer_artifact.trained_model_file_path)
         
         except Exception as e:
             raise UsVisaException(e , sys)

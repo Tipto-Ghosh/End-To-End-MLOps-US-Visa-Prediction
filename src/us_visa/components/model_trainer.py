@@ -48,15 +48,31 @@ class ModelTrainer:
                 tuned_model_report_path = self.model_trainer_config.tuned_model_report_file_path
             )
             
+            # run the model factory to do the hyper-parameter tuning
+            model_factory.run_model_factory(
+                X_train = X_train,
+                y_train = y_train,
+                X_test = X_test,
+                y_test = y_test
+            )
+            
             # tune all the models from model.yaml file
             logging.info("calling model_factory.get_best_model method from get_model_object_and_report")
-            best_model_detail = model_factory.get_best_model(
-                X_train = X_train , y_train = y_train
-            ) 
+            best_model_detail = model_factory.get_best_model()
+            
+            # get the model data
+            module_name = best_model_detail.module_name
+            class_name = best_model_detail.model_name
+            best_params = best_model_detail.best_params
+            logging.info(f"got the best model from model trainer[model name = {class_name}]")
+            logging.info(f"best model type [{type(best_model_detail.best_model)}]")
             
             # get the best model_object
             model_obj = best_model_detail.best_model
             logging.info("Got best model from best_model_detail.best_model")
+            
+            logging.info("Started train the best model object")
+            model_obj.fit(X_train , y_train)
             
             # 4. do the prediction using on test data with the best model
             logging.info("started the prediction using on test data with the best model")
@@ -65,10 +81,10 @@ class ModelTrainer:
             
             # 5. find the classification metrices for test data
             logging.info("finding the classification metrices for test data") 
-            accuracy = accuracy_score(y_test, y_pred) 
-            f1 = f1_score(y_test, y_pred)  
-            precision = precision_score(y_test, y_pred)  
-            recall = recall_score(y_test, y_pred)
+            accuracy = accuracy_score(y_test , y_pred)
+            f1 = f1_score(y_test , y_pred , average = "weighted")  
+            precision = precision_score(y_test , y_pred , average = "weighted")
+            recall = recall_score(y_test , y_pred , average = "weighted")
             
             # 6. make the ClassificationMetricArtifact
             logging.info("making the ClassificationMetricArtifact")
@@ -79,7 +95,7 @@ class ModelTrainer:
             
             # 7. return the best_model details and ClassificationMetricArtifact
             logging.info("Exiting from get_model_object_and_report method")
-            return metric_artifact
+            return best_model_detail , metric_artifact
         
         except Exception as e:
             raise UsVisaException(e , sys)
@@ -113,7 +129,9 @@ class ModelTrainer:
             
             # 4. Call UsVisaModel to combine preproccessor and best model
             # load the preprocessing object
+            logging.info("load the preprocessing object for merging with best model")
             preprocessing_object = load_object(self.data_transformation_artifact.transformed_object_file_path)
+            
             usvisa_model = UsVisaModel(
                 preprocessing_object = preprocessing_object , trained_model_object = best_model_detail.best_model
             )
@@ -129,7 +147,8 @@ class ModelTrainer:
             # 6. construct the model trainer artifact
             model_trainer_artifact = ModelTrainerArtifact(
                 trained_model_file_path = self.model_trainer_config.trained_model_file_path,
-                metric_artifact = metric_artifact
+                metric_artifact = metric_artifact,
+                tuned_model_report_file_path = self.model_trainer_config.tuned_model_report_file_path
             )
             # 7. return the model trainer artifact
             return model_trainer_artifact
