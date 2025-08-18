@@ -32,4 +32,5 @@ from_root
 evidently==0.2.8
 mlflow
 dill
+wandb
 # -e .

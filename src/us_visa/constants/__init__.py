@@ -26,6 +26,10 @@ TARGET_COLUMN = "case_status"
 CURRENT_YEAR = date.today().year
 SCHEMA_FILE_PATH = os.path.join("config" , "schema.yaml")
 
+# Cloud related constants
+AWS_ACCESS_KEY_ID_ENV_KEY = "AWS_ACCESS_KEY_ID"
+AWS_SECRET_ACCESS_KEY_ENV_KEY = "AWS_SECRET_ACCESS_KEY"
+REGION_NAME = "us-east-1"
 
 
 # Data Ingestion Constants
@@ -64,3 +68,10 @@ MODEL_TRAINER_EXPECTED_SCORE : float = 0.8 # minimal accuracy score for classifi
 MODEL_TRAINER_ALL_MODEL_REPORT_DIR: str = "all_model_report"
 # File path where all tuned models' details will be saved
 MODEL_TRAINER_ALL_TUNED_MODEL_REPORT_FILE_PATH: str = "all_tuned_model_report.yaml" 
+
+
+
+# Model Evaluation realted contant start with MODEL_EVALUATION
+MODEL_EVALUATION_CHANGED_THRESHOLD_SCORE : float = 0.02
+MODEL_BUCKET_NAME = "usvisa-model_17-08-2025"
+MODEL_PUSHER_S3_KEY = "model-registry"
