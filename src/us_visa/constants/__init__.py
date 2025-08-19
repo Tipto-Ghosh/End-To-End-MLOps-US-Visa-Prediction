@@ -79,6 +79,9 @@ MODEL_BUCKET_NAME = "usvisa-model_18Aug_2025"
 MODEL_PUSHER_S3_KEY = "model-registry"
 
 
+# Prediction Pipeline Constants for web app
+APP_HOST = "0.0.0.0"
+APP_PORT = 8080
 
 """ 
 dummy for wandb[Update when we use it]

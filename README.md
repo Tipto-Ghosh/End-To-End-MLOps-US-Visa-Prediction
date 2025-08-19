@@ -51,3 +51,10 @@
 ### Model Pusher workflow
 1. Update config_entity and artifact_entity
 2. Update model_pusher components
+3. Update the training pipeline
+
+---
+### Prediction Pipeline workflow
+1. update constants
+2. update config_entity
+3. update the prediction_pipeline
