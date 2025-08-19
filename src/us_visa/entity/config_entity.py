@@ -74,3 +74,16 @@ class ModelTrainerConfig:
     tuned_model_report_file_path : str = os.path.join(
         all_model_report_dir, MODEL_TRAINER_ALL_TUNED_MODEL_REPORT_FILE_PATH
     ) 
+
+
+
+# Holds path for cloud model downloads
+@dataclass
+class CloudModelConfig:
+    model_evaluation_dir = os.path.join(
+        training_pipeline_config.artifact_dir , MODEL_EVALUATION_DIR
+    )
+    cloud_model_dir = os.path.join(
+        model_evaluation_dir , CLOUD_MODEL_DIR
+    )
+    artifacts_path = CLOUD_ARTIFACTS

@@ -34,3 +34,8 @@ class ModelTrainerArtifact:
     trained_model_file_path : str 
     metric_artifact : ClassificationMetricArtifact
     tuned_model_report_file_path : str
+    
+
+@dataclass
+class CloudModelArtifact:
+    cloud_model_object_file_path : str = None
