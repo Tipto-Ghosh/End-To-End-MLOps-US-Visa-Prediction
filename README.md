@@ -46,3 +46,8 @@
 3. update artifact_entity
 4. update the model_evaluation component
 5. add model_evaluation to the training pipeline
+
+---
+### Model Pusher workflow
+1. Update config_entity and artifact_entity
+2. Update model_pusher components

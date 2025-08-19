@@ -43,6 +43,12 @@ class ModelEvaluationArtifact:
     s3_model_path : str 
     trained_model_path : str 
 
+
+@dataclass
+class ModelPusherArtifact:
+    bucket_name : str 
+    s3_model_path : str 
+
 @dataclass
 class CloudModelArtifact:
     cloud_model_object_file_path : str = None

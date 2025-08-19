@@ -8,12 +8,17 @@ from src.us_visa.components.data_validation import DataValidation
 from src.us_visa.components.data_transformation import DataTransformation
 from src.us_visa.components.model_trainer import ModelTrainer
 from src.us_visa.components.model_evaluation import ModelEvaluation
+from src.us_visa.components.model_pusher import ModelPusher
 
 from src.us_visa.entity.config_entity import(
-    DataIngestionConfig , DataValidationConfig , DataTransformationConfig , ModelTrainerConfig , ModelEvaluationConfig
+    DataIngestionConfig , DataValidationConfig, 
+    DataTransformationConfig , ModelTrainerConfig, 
+    ModelEvaluationConfig , ModelPusherConfig
 )
 from src.us_visa.entity.artifact_entity import (
-    DataIngestionArtifact , DataValidationArtifact , DataTransformationArtifact , ModelTrainerArtifact , ModelEvaluationArtifact
+    DataIngestionArtifact , DataValidationArtifact, 
+    DataTransformationArtifact , ModelTrainerArtifact, 
+    ModelEvaluationArtifact , ModelPusherArtifact
 )
 
 
@@ -34,6 +39,9 @@ class TrainingPipeline:
         
         # Do the model evaluation
         self.model_evaluation_config = ModelEvaluationConfig()
+        
+        # Do the model pushing to s3
+        self.model_pusher_config = ModelPusherConfig()
                
     def start_data_ingestion(self) -> DataIngestionArtifact:
         """ 
@@ -132,39 +140,65 @@ class TrainingPipeline:
         except Exception as e:
             raise UsVisaException(e , sys) from e 
         
+    def start_model_pusher(self , model_evaluation_artifact: ModelEvaluationArtifact) -> ModelPusherArtifact:
+        
+        """ 
+        This method of TrainPipeline class is responsible for starting model pushing
+        """
+        try:
+            logging.info("Entered into run_model_pusher")
+            model_pusher = ModelPusher(
+                model_evaluation_artifact = model_evaluation_artifact
+            )
             
+            model_pusher_artifact = model_pusher.initiate_model_pusher()
+            logging.info("Exiting from run_model_pusher from training_pipeline class")
+            
+            return model_pusher_artifact
+        except Exception as e:
+            raise UsVisaException(e , sys) from e 
+        
+        
     def run_training_pipeline(self , ) -> None:
         """ 
         This method of TrainingPipeline class is responsible for running complete training pipeline
         """
         
         try:
-          # 1. Run the data ingestion  
-          data_ingestion_artifact = self.start_data_ingestion()
-          logging.info("Data Ingestion is Done!!")
+            # 1. Run the data ingestion  
+            data_ingestion_artifact = self.start_data_ingestion()
+            logging.info("Data Ingestion is Done!!")
+            
+            # 2. Run the data validation
+            data_validation_artifact = self.start_data_validation(data_ingestion_artifact = data_ingestion_artifact)
+            #print(f"data_validation_artifact: {data_validation_artifact}")
+            
+            # 3. Run the data transformation
+            data_transformation_artifact = self.start_data_transformation(
+                data_ingestion_artifact = data_ingestion_artifact,
+                data_validation_artifact = data_validation_artifact
+            )
+            
+            # 4. Run the model trainer
+            model_trainer_artifact = self.start_model_trainer(
+                data_transformation_artifact = data_transformation_artifact
+            )
+            
+            # 5. Run the model evaluation
+            model_evaluation_artifact = self.start_model_evaluation(
+                data_ingestion_artifact = data_ingestion_artifact, 
+                model_trainer_artifact = model_trainer_artifact
+            )
+            
+            # check current model is accepted or not
+            if not model_evaluation_artifact.is_model_accepted:
+                logging.info("Model is not accepted. So cloud model remain same")
+                return None 
+                
+            # 6. Run the model pusher   
+            model_pusher_artifact = self.start_model_pusher(model_evaluation_artifact = model_trainer_artifact)
+            logging.info("End of run_training pipeline")
+            logging.info(model_pusher_artifact.bucket_name)
           
-          # 2. Run the data validation
-          data_validation_artifact = self.start_data_validation(data_ingestion_artifact = data_ingestion_artifact)
-          #print(f"data_validation_artifact: {data_validation_artifact}")
-          
-          # 3. Run the data transformation
-          data_transformation_artifact = self.start_data_transformation(
-            data_ingestion_artifact = data_ingestion_artifact,
-            data_validation_artifact = data_validation_artifact
-          )
-          
-          # 4. Run the model trainer
-          model_trainer_artifact = self.start_model_trainer(
-            data_transformation_artifact = data_transformation_artifact
-          )
-          
-          # 5. Run the model evaluation
-          model_evaluation_artifact = self.start_model_evaluation(
-              data_ingestion_artifact = data_ingestion_artifact , 
-              model_trainer_artifact = model_trainer_artifact
-          )   
-          print("= " * 50)
-          print(f"Is model accepted status: {model_evaluation_artifact.is_model_accepted}")
-        
         except Exception as e:
             raise UsVisaException(e , sys)
