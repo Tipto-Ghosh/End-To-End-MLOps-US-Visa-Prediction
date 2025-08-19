@@ -77,3 +77,12 @@ MODEL_TRAINER_ALL_TUNED_MODEL_REPORT_FILE_PATH: str = "all_tuned_model_report.ya
 MODEL_EVALUATION_CHANGED_THRESHOLD_SCORE : float = 0.02
 MODEL_BUCKET_NAME = "usvisa-model_18Aug_2025"
 MODEL_PUSHER_S3_KEY = "model-registry"
+
+
+
+""" 
+dummy for wandb[Update when we use it]
+"""
+MODEL_EVALUATION_DIR = None
+CLOUD_MODEL_DIR = None
+CLOUD_ARTIFACTS = None

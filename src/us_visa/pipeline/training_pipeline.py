@@ -7,9 +7,14 @@ from src.us_visa.components.data_ingestion import DataIngestion
 from src.us_visa.components.data_validation import DataValidation
 from src.us_visa.components.data_transformation import DataTransformation
 from src.us_visa.components.model_trainer import ModelTrainer
+from src.us_visa.components.model_evaluation import ModelEvaluation
 
-from src.us_visa.entity.config_entity import DataIngestionConfig , DataValidationConfig , DataTransformationConfig , ModelTrainerConfig
-from src.us_visa.entity.artifact_entity import DataIngestionArtifact , DataValidationArtifact , DataTransformationArtifact , ModelTrainerArtifact
+from src.us_visa.entity.config_entity import(
+    DataIngestionConfig , DataValidationConfig , DataTransformationConfig , ModelTrainerConfig , ModelEvaluationConfig
+)
+from src.us_visa.entity.artifact_entity import (
+    DataIngestionArtifact , DataValidationArtifact , DataTransformationArtifact , ModelTrainerArtifact , ModelEvaluationArtifact
+)
 
 
 
@@ -27,6 +32,9 @@ class TrainingPipeline:
         # Do the model training
         self.model_trainer_config = ModelTrainerConfig()
         
+        # Do the model evaluation
+        self.model_evaluation_config = ModelEvaluationConfig()
+               
     def start_data_ingestion(self) -> DataIngestionArtifact:
         """ 
         This will start the data ingestion component and return DataIngestionArtifact
@@ -102,7 +110,29 @@ class TrainingPipeline:
         except Exception as e:
             raise UsVisaException(e, sys)
         
+    
+    def start_model_evaluation(self , data_ingestion_artifact : DataIngestionArtifact,
+        model_trainer_artifact: ModelTrainerArtifact) -> ModelEvaluationArtifact:
         
+        """ 
+        This method of TrainingPipeline class is responsible for starting model evaluation
+        """
+        try:
+            logging.info("Entered into start_model_evaluation from training pipeline")
+            
+            model_evaluation = ModelEvaluation(
+                model_evaluation_config = self.model_evaluation_config,
+                data_ingestion_artifact = data_ingestion_artifact,
+                model_trainer_artifact = model_trainer_artifact
+            ) 
+            
+            model_evaluation_artifact = model_evaluation.initiate_model_evaluation()
+            return model_evaluation_artifact
+        
+        except Exception as e:
+            raise UsVisaException(e , sys) from e 
+        
+            
     def run_training_pipeline(self , ) -> None:
         """ 
         This method of TrainingPipeline class is responsible for running complete training pipeline
@@ -128,8 +158,13 @@ class TrainingPipeline:
             data_transformation_artifact = data_transformation_artifact
           )
           
+          # 5. Run the model evaluation
+          model_evaluation_artifact = self.start_model_evaluation(
+              data_ingestion_artifact = data_ingestion_artifact , 
+              model_trainer_artifact = model_trainer_artifact
+          )   
           print("= " * 50)
-          print(model_trainer_artifact.trained_model_file_path)
+          print(f"Is model accepted status: {model_evaluation_artifact.is_model_accepted}")
         
         except Exception as e:
             raise UsVisaException(e , sys)
